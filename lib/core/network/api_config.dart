@@ -20,4 +20,8 @@ class ApiEndpoints {
   ApiEndpoints._();
 
   static const String login = '/api/auth/login';
+  static const String register = '/api/user/create';
+  static const String forgotPassword = '/api/user/forgot-password';
+  static const String verifyOtp = '/api/user/verify-otp';
+  static const String resetPassword = '/api/user/reset-password';
 }

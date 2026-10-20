@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 import 'screens/home_screen.dart';
 import 'screens/login_screen.dart';
@@ -25,6 +26,18 @@ class CricketApp extends StatelessWidget {
       title: 'CCCHub',
       debugShowCheckedModeBanner: false,
       theme: AppTheme.light,
+      // Page Up/Down inside an empty single-line text field trips a framework
+      // assertion (editable.dart `isValid`). None of our fields are
+      // multi-line, so let those keys skip text fields and scroll the page.
+      builder: (context, child) => Shortcuts(
+        shortcuts: const {
+          SingleActivator(LogicalKeyboardKey.pageUp):
+              DoNothingAndStopPropagationTextIntent(),
+          SingleActivator(LogicalKeyboardKey.pageDown):
+              DoNothingAndStopPropagationTextIntent(),
+        },
+        child: child!,
+      ),
       home: session == null
           ? LoginScreen(authService: authService)
           : HomeScreen(authService: authService, user: session.user),

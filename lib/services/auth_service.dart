@@ -35,6 +35,54 @@ class AuthService {
     return _session!;
   }
 
+  /// Creates an account. Returns the server message. Throws [ApiException].
+  Future<String> register({
+    required String userName,
+    required String email,
+    required String phone,
+    required String password,
+  }) {
+    return _postMessage(ApiEndpoints.register, {
+      'userName': userName,
+      'email': email,
+      'phone': phone,
+      'password': password,
+    });
+  }
+
+  /// Emails a one-time code for resetting the password.
+  Future<String> forgotPassword({required String email}) {
+    return _postMessage(ApiEndpoints.forgotPassword, {'email': email});
+  }
+
+  /// Checks the emailed code before asking for a new password.
+  Future<String> verifyOtp({required String email, required String otp}) {
+    return _postMessage(ApiEndpoints.verifyOtp, {'email': email, 'otp': otp});
+  }
+
+  Future<String> resetPassword({
+    required String email,
+    required String otp,
+    required String newPassword,
+  }) {
+    return _postMessage(ApiEndpoints.resetPassword, {
+      'email': email,
+      'otp': otp,
+      'newPassword': newPassword,
+    });
+  }
+
+  /// For endpoints whose `result` the app doesn't use.
+  Future<String> _postMessage(String path, Map<String, dynamic> body) async {
+    final response = await _api.post<Object?>(
+      path,
+      authenticated: false,
+      body: body,
+      parser: (result) => result,
+    );
+    return response.message;
+  }
+
   /// Loads a saved session on app start.
   Future<AuthSession?> restoreSession() async {
     _session = await _storage.read();
